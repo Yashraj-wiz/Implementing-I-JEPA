@@ -1,0 +1,41 @@
+# ImageNet-100 masked-patch decoder for the final ViT-L/16 I-JEPA encoder (2026-10-02, decoder = user's 1st priority).
+# Baseline recipe (same decoder as STL-10: 256 wide, 4 deep) + model selection on a held-out slice of TRAIN:
+# held-out masked L1 every eval_every steps with fixed masks, best.pt = best held-out L1, early stop after
+# early_stop_patience evaluations without improvement. The validation split stays untouched as the benchmark.
+# Provisional length/batch until a Modal profile has measured throughput. Model geometry, masks and dataset are
+# inherited from the encoder checkpoint (data root /vol/data/imagenet-100/data, cache /vol/hf_cache).
+seed: 53
+encoder_checkpoint: /vol/runs/imagenet100_vitl16_l2_b512_h100_150ep/epoch_150_weights.pt
+conditioning: predicted
+data:
+  batch_size: 128
+  num_workers: 8
+  pin_memory: true
+  masks_in_loader: true
+  seed: 53
+decoder:
+  decoder_dim: 256
+  depth: 4
+  heads: 8
+  mlp_ratio: 4.0
+optimization:
+  lr: 0.0003
+  start_lr: 0.00001
+  final_lr: 0.000001
+  warmup_steps: 2000
+  weight_decay: 0.04
+  grad_clip: 1.0
+training:
+  total_steps: 100000
+  precision: bf16
+  output_dir: /vol/runs/imagenet100_vitl16_decoder_predicted_v1
+  log_every: 50
+  checkpoint_every: 1000
+  archive_every: 0
+  sample_every: 10000
+  holdout_size: 5000
+  holdout_seed: 0
+  eval_every: 2000
+  eval_batch_size: 256
+  early_stop_patience: 6
+  resume: true

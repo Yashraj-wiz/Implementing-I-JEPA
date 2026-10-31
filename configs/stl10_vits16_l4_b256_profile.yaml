@@ -1,0 +1,46 @@
+seed: 41
+data:
+  name: stl10
+  root: /vol/data
+  image_size: 224
+  crop_scale: [0.3, 1.0]
+  batch_size: 256
+  num_workers: 8
+  pin_memory: true
+  seed: 41
+model:
+  image_size: 224
+  patch_size: 16
+  encoder_dim: 384
+  encoder_depth: 12
+  encoder_heads: 6
+  predictor_dim: 192
+  predictor_depth: 6
+  predictor_heads: 6
+  mlp_ratio: 4.0
+mask:
+  num_targets: 4
+  target_scale: [0.15, 0.20]
+  context_scale: [0.85, 1.0]
+  target_aspect: [0.75, 1.5]
+  min_context_patches: 10
+objective:
+  loss: smooth_l1
+  normalize_targets: true
+optimization:
+  lr: 0.0006
+  start_lr: 0.00002
+  final_lr: 0.000002
+  warmup_steps: 10
+  weight_decay: 0.04
+  final_weight_decay: 0.4
+  ema: [0.996, 1.0]
+  grad_clip: 1.0
+training:
+  epochs: 1
+  total_steps: 30
+  precision: bf16
+  output_dir: /vol/runs/stl10_vits16_l4_b256_profile
+  log_every: 5
+  checkpoint_every: 30
+  resume: false

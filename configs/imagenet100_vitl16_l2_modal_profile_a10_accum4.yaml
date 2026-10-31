@@ -1,0 +1,64 @@
+# Modal A10 test (2026-09-28): ViT-L/16, effective batch 512 = 4 x 128 micro-batches, 20 optimizer steps.
+# User's test: 'run 4 mini batches in A10, if OOM then we will talk'. Expected risk: 128-image micro-batches
+# peaked at 23.4-26.0 GiB on larger GPUs; the A10 reports 22.1 GiB.
+seed: 31
+data:
+  name: imagenet100
+  root: /vol/data/imagenet-100/data
+  cache_dir: /vol/hf_cache
+  image_size: 224
+  crop_scale:
+  - 0.3
+  - 1.0
+  batch_size: 128
+  num_workers: 8
+  pin_memory: true
+  seed: 31
+  masks_in_loader: true
+model:
+  image_size: 224
+  patch_size: 16
+  encoder_dim: 1024
+  encoder_depth: 24
+  encoder_heads: 16
+  predictor_dim: 384
+  predictor_depth: 12
+  predictor_heads: 16
+  mlp_ratio: 4.0
+mask:
+  num_targets: 4
+  target_scale:
+  - 0.15
+  - 0.2
+  context_scale:
+  - 0.85
+  - 1.0
+  target_aspect:
+  - 0.75
+  - 1.5
+  min_context_patches: 10
+objective:
+  loss: l2
+  normalize_targets: true
+optimization:
+  lr: 0.00025
+  start_lr: 1.0e-05
+  final_lr: 1.0e-06
+  warmup_steps: 5
+  weight_decay: 0.04
+  final_weight_decay: 0.4
+  ema:
+  - 0.996
+  - 1.0
+  grad_clip: 1.0
+training:
+  epochs: 1
+  total_steps: 20
+  precision: bf16
+  output_dir: /vol/runs/imagenet100_vitl16_profile
+  log_every: 2
+  checkpoint_every: 20
+  archive_every: 0
+  resume: false
+  sync_every_step: false
+  grad_accum_steps: 4

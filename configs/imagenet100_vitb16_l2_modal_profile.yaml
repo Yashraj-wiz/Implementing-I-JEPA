@@ -1,0 +1,50 @@
+# Modal profile: ImageNet-100 ViT-B/16, L2, batch 128, 60 steps (decision D-010, 2026-09-28).
+# modal_app.py overrides output_dir per GPU (imagenet100_vitb16_profile_<gpu>).
+seed: 31
+data:
+  name: imagenet100
+  root: /vol/data/imagenet-100/data
+  cache_dir: /vol/hf_cache
+  image_size: 224
+  crop_scale: [0.3, 1.0]
+  batch_size: 128
+  num_workers: 8
+  pin_memory: true
+  seed: 31
+model:
+  image_size: 224
+  patch_size: 16
+  encoder_dim: 768
+  encoder_depth: 12
+  encoder_heads: 12
+  predictor_dim: 384
+  predictor_depth: 6
+  predictor_heads: 12
+  mlp_ratio: 4.0
+mask:
+  num_targets: 4
+  target_scale: [0.15, 0.20]
+  context_scale: [0.85, 1.0]
+  target_aspect: [0.75, 1.5]
+  min_context_patches: 10
+objective:
+  loss: l2
+  normalize_targets: true
+optimization:
+  lr: 0.0003
+  start_lr: 0.00001
+  final_lr: 0.000001
+  warmup_steps: 10
+  weight_decay: 0.04
+  final_weight_decay: 0.4
+  ema: [0.996, 1.0]
+  grad_clip: 1.0
+training:
+  epochs: 1
+  total_steps: 60
+  precision: bf16
+  output_dir: /vol/runs/imagenet100_vitb16_profile
+  log_every: 10
+  checkpoint_every: 60
+  archive_every: 0
+  resume: false

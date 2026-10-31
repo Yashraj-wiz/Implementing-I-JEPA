@@ -1,0 +1,29 @@
+seed: 47
+encoder_checkpoint: /vol/encoder_checkpoints/local_step_0058000.pt
+data:
+  root: /vol/data
+  batch_size: 128
+  num_workers: 8
+  pin_memory: true
+  seed: 47
+decoder:
+  decoder_dim: 256
+  depth: 4
+  heads: 8
+  mlp_ratio: 4.0
+optimization:
+  lr: 0.0003
+  start_lr: 0.00001
+  final_lr: 0.000001
+  warmup_steps: 10000
+  weight_decay: 0.04
+  grad_clip: 1.0
+training:
+  total_steps: 300000
+  precision: bf16
+  output_dir: /vol/runs/stl10_masked_decoder_300k_step58000
+  log_every: 20
+  checkpoint_every: 1000
+  archive_every: 25000
+  sample_every: 5000
+  resume: true

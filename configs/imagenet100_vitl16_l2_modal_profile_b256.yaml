@@ -1,0 +1,51 @@
+# Modal profile: ImageNet-100 ViT-L/16, L2, BATCH 256, 60 steps (2026-09-28). Run on H100:
+#   modal run modal_app.py --action profile-h100-imagenet100 --config imagenet100_vitl16_l2_modal_profile_b256.yaml
+# LR doubled (linear scaling) vs the batch-128 profile; output_dir is overridden per GPU by modal_app.py.
+seed: 31
+data:
+  name: imagenet100
+  root: /vol/data/imagenet-100/data
+  cache_dir: /vol/hf_cache
+  image_size: 224
+  crop_scale: [0.3, 1.0]
+  batch_size: 256
+  num_workers: 8
+  pin_memory: true
+  seed: 31
+model:
+  image_size: 224
+  patch_size: 16
+  encoder_dim: 1024
+  encoder_depth: 24
+  encoder_heads: 16
+  predictor_dim: 384
+  predictor_depth: 12
+  predictor_heads: 16
+  mlp_ratio: 4.0
+mask:
+  num_targets: 4
+  target_scale: [0.15, 0.20]
+  context_scale: [0.85, 1.0]
+  target_aspect: [0.75, 1.5]
+  min_context_patches: 10
+objective:
+  loss: l2
+  normalize_targets: true
+optimization:
+  lr: 0.0006
+  start_lr: 0.00001
+  final_lr: 0.000001
+  warmup_steps: 10
+  weight_decay: 0.04
+  final_weight_decay: 0.4
+  ema: [0.996, 1.0]
+  grad_clip: 1.0
+training:
+  epochs: 1
+  total_steps: 60
+  precision: bf16
+  output_dir: /vol/runs/imagenet100_vitl16_profile
+  log_every: 10
+  checkpoint_every: 60
+  archive_every: 0
+  resume: false

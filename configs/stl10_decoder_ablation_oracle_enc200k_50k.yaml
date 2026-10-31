@@ -1,0 +1,33 @@
+# Oracle-decoder ablation (2026-09-28): identical from-scratch decoders against the
+# step-200k encoder; only the latent input differs (predicted = context encoder +
+# predictor; oracle = LayerNorm'ed target-encoder tokens, an upper-bound diagnostic).
+seed: 47
+encoder_checkpoint: artifacts/modal_encoder_step_0200000_final.pt
+conditioning: oracle
+data:
+  root: data
+  batch_size: 128
+  num_workers: 2
+  pin_memory: true
+  seed: 47
+decoder:
+  decoder_dim: 256
+  depth: 4
+  heads: 8
+  mlp_ratio: 4.0
+optimization:
+  lr: 0.0003
+  start_lr: 0.00001
+  final_lr: 0.000001
+  warmup_steps: 2000
+  weight_decay: 0.04
+  grad_clip: 1.0
+training:
+  total_steps: 50000
+  precision: bf16
+  output_dir: artifacts/stl10_decoder_ablation/oracle_enc200k_50k
+  log_every: 50
+  checkpoint_every: 1000
+  archive_every: 50000
+  sample_every: 10000
+  resume: true

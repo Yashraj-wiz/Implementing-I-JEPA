@@ -1,0 +1,25 @@
+# Python and tooling
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+.vscode/
+.idea/
+.claude/
+
+# Datasets, checkpoints and run outputs
+data/
+artifacts/
+*.pt
+*.pth
+*.tar
+*.tar.gz
+*.ckpt
+*.safetensors
+*.parquet
+*.arrow
+*.log
+*.jsonl
+*.pdf

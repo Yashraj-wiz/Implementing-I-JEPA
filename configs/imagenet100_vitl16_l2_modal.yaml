@@ -1,0 +1,54 @@
+# Modal main run: ImageNet-100 ViT-L/16, L2, batch 128 (2026-09-28). GPU H100 and 98 epochs fixed from measured profiles (553 img/s); LR
+# are to be fixed from measured profiles. LR 1.5e-4 is a cautious starting value for the larger model (the STL-10
+# ViT-S Modal run used 3e-4 at batch 128; the paper's 1e-3 at batch 2048 scales linearly to 6.25e-5).
+# Checkpoints are ~5 GB each (computed), so checkpoint/archive intervals are wider.
+seed: 31
+data:
+  name: imagenet100
+  root: /vol/data/imagenet-100/data
+  cache_dir: /vol/hf_cache
+  image_size: 224
+  crop_scale: [0.3, 1.0]
+  batch_size: 128
+  num_workers: 8
+  masks_in_loader: true  # measured +9% on H100 (553 vs 507 img/s)
+  pin_memory: true
+  seed: 31
+model:
+  image_size: 224
+  patch_size: 16
+  encoder_dim: 1024
+  encoder_depth: 24
+  encoder_heads: 16
+  predictor_dim: 384
+  predictor_depth: 12
+  predictor_heads: 16
+  mlp_ratio: 4.0
+mask:
+  num_targets: 4
+  target_scale: [0.15, 0.20]
+  context_scale: [0.85, 1.0]
+  target_aspect: [0.75, 1.5]
+  min_context_patches: 10
+objective:
+  loss: l2
+  normalize_targets: true
+optimization:
+  lr: 0.00015
+  start_lr: 0.00001
+  final_lr: 0.000001
+  warmup_steps: 4846  # 5% of total_steps
+  weight_decay: 0.04
+  final_weight_decay: 0.4
+  ema: [0.996, 1.0]
+  grad_clip: 1.0
+training:
+  epochs: 300
+  total_steps: 96922  # 98 epochs x 989 steps/epoch (126,689 // 128); user choice 2026-09-28
+  precision: bf16
+  output_dir: /vol/runs/imagenet100_vitl16_l2_b128
+  log_every: 20
+  checkpoint_every: 5000  # ~5.1 GB per save (computed); ~4 min apart at 2000 would add large overhead
+  archive_every: 50000
+  resume: true
+  sync_every_step: false

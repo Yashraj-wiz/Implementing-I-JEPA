@@ -1,0 +1,41 @@
+# RCDM-style latent visualizer on ImageNet-100 with the frozen ViT-L/16 I-JEPA encoder
+# (decisions D-011, D-012; 2026-09-28). ImageNet-100 only: no STL-10 models are used.
+# Caches are built by `modal_app.py --action rcdm-cache-imagenet100 --encoder <ckpt>`.
+# H100 profile (2026-10-02, 300 steps): ~1,100 img/s, 3.67 GB peak. ema_warmup added 2026-10-02 before the
+# first long run (the step-300 profile grid came from an EMA that was still 97% random init).
+seed: 11
+vae_cache: /vol/hf_models
+cache:
+  train: /vol/rcdm_cache/imagenet100_vitl16_train.pt
+  val: /vol/rcdm_cache/imagenet100_vitl16_validation.pt
+model:
+  block_out_channels: [128, 256, 512]
+  layers_per_block: 2
+  attention_levels: [false, true, true]
+  attention_head_dim: 64
+  cond_hidden_dim: 512
+diffusion:
+  num_train_timesteps: 1000
+optimization:
+  lr: 0.0001
+  start_lr: 0.000001
+  final_lr: 0.00001
+  warmup_steps: 1000
+  weight_decay: 0.0
+  ema_decay: 0.9999
+  ema_warmup: true   # decay = min(0.9999, (1 + t) / (10 + t)); reaches 0.9999 at t = 89,990
+  grad_clip: 1.0
+  cond_drop_prob: 0.0
+training:
+  total_steps: 100000
+  batch_size: 64
+  precision: bf16
+  output_dir: /vol/runs/rcdm_imagenet100_vitl16
+  log_every: 50
+  checkpoint_every: 2500
+  archive_every: 25000
+  sample_every: 5000
+  sample_images: 8
+  samples_per_image: 3
+  sample_steps: 50
+  resume: true

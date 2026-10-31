@@ -1,0 +1,39 @@
+# LOCAL pipeline check (RTX 4060) of imagenet100_vitl16_decoder_predicted_v1.yaml: 40 steps at batch 64 on the
+# local ImageNet-100 copy and the downloaded epoch-150 weights; two held-out evals (512 images).
+seed: 53
+encoder_checkpoint: artifacts/vitl_snapshots/epoch_150_weights.pt
+conditioning: predicted
+data:
+  batch_size: 64
+  num_workers: 4
+  pin_memory: true
+  masks_in_loader: true
+  seed: 53
+  root: data/imagenet-100/data
+  cache_dir: data/hf_cache
+decoder:
+  decoder_dim: 256
+  depth: 4
+  heads: 8
+  mlp_ratio: 4.0
+optimization:
+  lr: 0.0003
+  start_lr: 1.0e-05
+  final_lr: 1.0e-06
+  warmup_steps: 2000
+  weight_decay: 0.04
+  grad_clip: 1.0
+training:
+  total_steps: 40
+  precision: bf16
+  output_dir: artifacts/imagenet100_vitl16_decoder_local_check
+  log_every: 10
+  checkpoint_every: 1000
+  archive_every: 0
+  sample_every: 40
+  holdout_size: 512
+  holdout_seed: 0
+  eval_every: 20
+  eval_batch_size: 64
+  early_stop_patience: 0
+  resume: false

@@ -1,0 +1,67 @@
+# ImageNet-100 ViT-L/16 I-JEPA, L2, EFFECTIVE BATCH 512 = 2 x 256 micro-batches, on H100 (2026-09-29).
+# 150-epoch schedule = 37,050 optimizer steps; LR 2.5e-4 (paper 1e-3 @ 2048 scaled to 512), warmup 5%.
+# Stopped by the user's Modal budget limit (no internal max_hours). From epoch 60: rolling latest.pt +
+# epoch_NNN_weights.pt (bf16 weights) every epoch; before that latest.pt every 1000 steps.
+seed: 31
+data:
+  name: imagenet100
+  root: /vol/data/imagenet-100/data
+  cache_dir: /vol/hf_cache
+  image_size: 224
+  crop_scale:
+  - 0.3
+  - 1.0
+  batch_size: 256
+  num_workers: 8
+  masks_in_loader: true
+  pin_memory: true
+  seed: 31
+model:
+  image_size: 224
+  patch_size: 16
+  encoder_dim: 1024
+  encoder_depth: 24
+  encoder_heads: 16
+  predictor_dim: 384
+  predictor_depth: 12
+  predictor_heads: 16
+  mlp_ratio: 4.0
+mask:
+  num_targets: 4
+  target_scale:
+  - 0.15
+  - 0.2
+  context_scale:
+  - 0.85
+  - 1.0
+  target_aspect:
+  - 0.75
+  - 1.5
+  min_context_patches: 10
+objective:
+  loss: l2
+  normalize_targets: true
+optimization:
+  lr: 0.00025
+  start_lr: 1.0e-05
+  final_lr: 1.0e-06
+  warmup_steps: 1852
+  weight_decay: 0.04
+  final_weight_decay: 0.4
+  ema:
+  - 0.996
+  - 1.0
+  grad_clip: 1.0
+training:
+  epochs: 150
+  total_steps: 37050
+  precision: bf16
+  output_dir: /vol/runs/imagenet100_vitl16_l2_b512_h100_150ep
+  log_every: 10
+  checkpoint_every: 1000
+  archive_every: 0
+  resume: true
+  sync_every_step: false
+  grad_accum_steps: 2
+  max_hours: 0
+  epoch_checkpoint_from: 60

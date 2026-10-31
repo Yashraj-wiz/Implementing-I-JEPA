@@ -1,0 +1,37 @@
+# 60-step Modal profile of imagenet100_vitl16_decoder_predicted_v1.yaml (same recipe; one held-out eval at
+# step 50 on 2,048 images to time it). output_dir is overridden per GPU by modal_app.py.
+seed: 53
+encoder_checkpoint: /vol/runs/imagenet100_vitl16_l2_b512_h100_150ep/epoch_150_weights.pt
+conditioning: predicted
+data:
+  batch_size: 128
+  num_workers: 8
+  pin_memory: true
+  masks_in_loader: true
+  seed: 53
+decoder:
+  decoder_dim: 256
+  depth: 4
+  heads: 8
+  mlp_ratio: 4.0
+optimization:
+  lr: 0.0003
+  start_lr: 1.0e-05
+  final_lr: 1.0e-06
+  warmup_steps: 2000
+  weight_decay: 0.04
+  grad_clip: 1.0
+training:
+  total_steps: 60
+  precision: bf16
+  output_dir: /vol/runs/imagenet100_vitl16_decoder_profile
+  log_every: 10
+  checkpoint_every: 1000
+  archive_every: 0
+  sample_every: 0
+  holdout_size: 2048
+  holdout_seed: 0
+  eval_every: 50
+  eval_batch_size: 256
+  early_stop_patience: 0
+  resume: false

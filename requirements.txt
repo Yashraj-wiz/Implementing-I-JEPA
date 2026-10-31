@@ -1,0 +1,13 @@
+# Versions the code was developed and tested with (Python 3.10, Windows 11, CUDA 12.1 build of PyTorch).
+# For a CUDA build, install torch/torchvision from https://pytorch.org first, then the rest.
+torch==2.5.1
+torchvision==0.20.1
+numpy==2.2.6
+pyyaml==6.0.3
+pillow==10.4.0
+datasets==5.0.0        # ImageNet-100 parquet loading (pulls in pyarrow)
+diffusers==0.35.2      # RCDM visualizer: UNet2DModel, DDIM, SD-VAE
+huggingface_hub==0.36.2
+
+# Optional: cloud training on Modal (modal_app.py)
+# modal==1.5.1
