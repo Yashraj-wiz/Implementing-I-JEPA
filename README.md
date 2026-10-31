@@ -145,13 +145,6 @@ modal_app.py    Modal cloud-GPU entry points
 
 On Windows, scripts must import `src.ijepa` (which imports `datasets`) before `torch`; the entry points already do this.
 
-## Limitations
-
-- **Decoder fills are blurry.** The decoder predicts the average fill, and the oracle experiment above traces this to the predictor's features, not to the decoder design.
-- **RCDM samples distort faces and cluttered scenes.** The RCDM was not trained for inpainting, so seams and tone shifts can appear at the hole's edge.
-- **Evaluations not run:** the paper's ImageNet-1K and low-shot evaluations, transfer tasks, and an MAE baseline.
-- **Training data:** the encoder and the RCDM were trained on all ImageNet-100 training images, and the decoder on all but a 5,000-image hold-out. All reported numbers use the validation split, which no model saw.
-
 ## References
 
 - M. Assran et al. *Self-Supervised Learning from Images with a Joint-Embedding Predictive Architecture.* CVPR 2023. [arXiv:2301.08243](https://arxiv.org/abs/2301.08243)
