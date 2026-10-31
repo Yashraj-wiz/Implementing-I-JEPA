@@ -153,4 +153,4 @@ On Windows, scripts must import `src.ijepa` (which imports `datasets`) before `t
 
 ## License
 
-The code is released under the MIT License (see `LICENSE`). ImageNet-100 is a subset of ImageNet and is subject to its non-commercial terms. The example images in `assets/` are from the ImageNet validation set and the STL-10 test set and belong to their respective owners.
+Copyright (c) 2026 Yashraj-wiz. All rights reserved (see `LICENSE`). ImageNet-100 is a subset of ImageNet and is subject to its non-commercial terms. The example images in `assets/` are from the ImageNet validation set and the STL-10 test set and belong to their respective owners.
